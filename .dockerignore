@@ -7,8 +7,6 @@
 # Documentation
 *.md
 docs/
-docs/DEVELOPER_NOTES.md
-docs/ARCHITECTURE.md
 
 # CI/CD
 .circleci
@@ -56,7 +54,7 @@ phpunit.xml
 coverage/
 .coverage
 
-# Package manager files (excluding lock files needed for builds)
+# Package manager files
 npm-debug.log
 yarn-error.log
 
@@ -64,8 +62,6 @@ yarn-error.log
 Homestead.yaml
 Homestead.json
 /.vagrant
-rr
-# .rr.yaml should not be excluded - it's needed for RoadRunner
 
 # Backup files
 *.bak

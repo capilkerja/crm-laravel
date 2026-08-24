@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: boilerplate-laravel
-  namespace: boilerplate-laravel
+  name: liberu-crm
+  namespace: liberu-crm
   labels:
-    app: boilerplate-laravel
+    app: liberu-crm
     component: application
 spec:
   replicas: 2
@@ -15,29 +15,43 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: boilerplate-laravel
+      app: liberu-crm
       component: application
   template:
     metadata:
       labels:
-        app: boilerplate-laravel
+        app: liberu-crm
         component: application
     spec:
       initContainers:
       - name: wait-for-mysql
-        image: busybox:1.36
-        command: ["sh", "-c", "until nc -z boilerplate-mysql 3306; do echo 'Waiting for MySQL...'; sleep 2; done"]
+        image: busybox:1.35
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z liberu-crm-mysql 3306; do
+            echo "Waiting for MySQL..."; sleep 2
+          done
+          echo "MySQL is ready!"
       - name: migrations
-        image: ghcr.io/liberusoftware/boilerplate-laravel:latest
-        command: ["sh", "-c", "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache"]
+        image: liberu/crm:latest
+        command:
+        - sh
+        - -c
+        - |
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
         envFrom:
         - configMapRef:
-            name: boilerplate-config
+            name: liberu-crm-config
         - secretRef:
-            name: boilerplate-secrets
+            name: liberu-crm-secrets
       containers:
       - name: app
-        image: ghcr.io/liberusoftware/boilerplate-laravel:latest
+        image: liberu/crm:latest
         ports:
         - containerPort: 8000
           name: http
@@ -45,9 +59,9 @@ spec:
           name: rpc
         envFrom:
         - configMapRef:
-            name: boilerplate-config
+            name: liberu-crm-config
         - secretRef:
-            name: boilerplate-secrets
+            name: liberu-crm-secrets
         volumeMounts:
         - name: storage
           mountPath: /var/www/html/storage
@@ -62,36 +76,92 @@ spec:
             cpu: "1000m"
         startupProbe:
           httpGet:
-            path: /up
+            path: /health/startup
             port: 8000
           initialDelaySeconds: 10
           periodSeconds: 5
+          timeoutSeconds: 3
           failureThreshold: 30
         livenessProbe:
-          httpGet:
-            path: /up
-            port: 8000
+          exec:
+            command:
+            - php
+            - artisan
+            - octane:status
           initialDelaySeconds: 30
           periodSeconds: 10
+          timeoutSeconds: 5
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /up
+            path: /health/ready
             port: 8000
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 3
           failureThreshold: 3
         securityContext:
           runAsNonRoot: true
           runAsUser: 1000
           allowPrivilegeEscalation: false
           capabilities:
-            drop: [ALL]
+            drop:
+            - ALL
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: boilerplate-storage
+          claimName: liberu-crm-storage
       - name: cache
         emptyDir: {}
       securityContext:
         fsGroup: 1000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liberu-crm-horizon
+  namespace: liberu-crm
+  labels:
+    app: liberu-crm
+    component: horizon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liberu-crm
+      component: horizon
+  template:
+    metadata:
+      labels:
+        app: liberu-crm
+        component: horizon
+    spec:
+      containers:
+      - name: horizon
+        image: liberu/crm:latest
+        env:
+        - name: CONTAINER_MODE
+          value: "horizon"
+        envFrom:
+        - configMapRef:
+            name: liberu-crm-config
+        - secretRef:
+            name: liberu-crm-secrets
+        volumeMounts:
+        - name: storage
+          mountPath: /var/www/html/storage
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: liberu-crm-storage

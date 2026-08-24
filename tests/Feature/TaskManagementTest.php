@@ -1,0 +1,105 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Contact;
+use App\Models\Lead;
+use App\Models\Task;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class TaskManagementTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_create_task_for_contact(): void
+    {
+        $user = User::factory()->create();
+        $contact = Contact::factory()->create();
+
+        Task::factory()->create([
+            'name' => 'Test Task',
+            'description' => 'Test Description',
+            'contact_id' => $contact->id,
+            'assigned_to' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'name' => 'Test Task',
+            'contact_id' => $contact->id,
+            'assigned_to' => $user->id,
+        ]);
+    }
+
+    public function test_create_task_for_lead(): void
+    {
+        $user = User::factory()->create();
+        $lead = Lead::factory()->create();
+
+        Task::factory()->create([
+            'name' => 'Lead Task',
+            'lead_id' => $lead->id,
+            'assigned_to' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'name' => 'Lead Task',
+            'lead_id' => $lead->id,
+            'assigned_to' => $user->id,
+        ]);
+    }
+
+    public function test_assign_task(): void
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        $task = Task::factory()->create(['assigned_to' => $user1->id]);
+
+        $task->update(['assigned_to' => $user2->id]);
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'assigned_to' => $user2->id,
+        ]);
+    }
+
+    public function test_update_task_status(): void
+    {
+        $task = Task::factory()->create(['status' => 'pending']);
+
+        $task->update(['status' => 'completed']);
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'status' => 'completed',
+        ]);
+    }
+
+    public function test_task_filter_by_status(): void
+    {
+        $pendingBefore = Task::where('status', 'pending')->count();
+        $completedBefore = Task::where('status', 'completed')->count();
+
+        Task::factory()->count(3)->create(['status' => 'pending']);
+        Task::factory()->count(2)->create(['status' => 'completed']);
+
+        $pendingTasks = Task::where('status', 'pending')->count();
+        $completedTasks = Task::where('status', 'completed')->count();
+
+        $this->assertEquals($pendingBefore + 3, $pendingTasks);
+        $this->assertEquals($completedBefore + 2, $completedTasks);
+    }
+
+    public function test_task_search_by_name(): void
+    {
+        Task::factory()->create(['name' => 'Unique Task Alpha Search']);
+        Task::factory()->create(['name' => 'Another Unrelated Task']);
+
+        $results = Task::where('name', 'like', '%Unique Task Alpha%')->get();
+
+        $this->assertCount(1, $results);
+        $this->assertEquals('Unique Task Alpha Search', $results->first()->name);
+    }
+}

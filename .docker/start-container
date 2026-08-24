@@ -21,12 +21,13 @@ if [ "$1" != "" ]; then
 elif [ "${container_mode}" = "http" ]; then
     initialStuff
     echo "Octane Server: $OCTANE_SERVER"
-    if [ "${OCTANE_SERVER}" = "frankenphp" ]; then
-        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.frankenphp.conf
+
+    if [ "${OCTANE_SERVER}" = "roadrunner" ]; then
+        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.roadrunner.conf
     elif [ "${OCTANE_SERVER}" = "swoole" ]; then
         exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.swoole.conf
-    elif [ "${OCTANE_SERVER}" = "roadrunner" ]; then
-        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.roadrunner.conf
+    elif [ "${OCTANE_SERVER}" = "frankenphp" ]; then
+        exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.frankenphp.conf
     else
         echo "Invalid Octane server supplied."
         exit 1

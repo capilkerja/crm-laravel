@@ -3,9 +3,22 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use RectorLaravel\Rector\FuncCall\RemoveDumpDataDeadCodeRector;
+use Rector\Set\ValueObject\LevelSetList;
+use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
-    ->withConfiguredRule(RemoveDumpDataDeadCodeRector::class, [
-        'dd', 'dump', 'var_dump',
+    ->withPaths([
+        __DIR__.'/app',
+        __DIR__.'/database',
+        __DIR__.'/routes',
+        __DIR__.'/tests',
+    ])
+    ->withSkip([
+        __DIR__.'/vendor',
+    ])
+    ->withPhpSets(php84: true)
+    ->withSets([
+        SetList::CODE_QUALITY,
+        SetList::DEAD_CODE,
+        SetList::TYPE_DECLARATION,
     ]);

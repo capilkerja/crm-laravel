@@ -1,53 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers\Filament;
 
-use App\Filament\ModulePlugins;
-use App\Support\ThemeColors;
-use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
+use App\Filament\App\Pages;
+use App\Filament\Pages\ReportCustomizer;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use Filament\Pages as FilamentPage;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Liberu\Foundation\ApplicationCore\Http\Middleware\SecurityHeaders;
-use Liberu\Foundation\Localization\Http\Middleware\SetLocale;
-use Liberu\Foundation\Organizations\Models\Team;
+use Laravel\Fortify\Fortify;
+use Laravel\Jetstream\Jetstream;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            ->colors(app(ThemeColors::class)->forSite())
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->colors([
+                'primary' => Color::Gray,
+            ])
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
+            ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
+            ->discoverWidgets(in: app_path('Filament/Admin/Widgets/Home'), for: 'App\\Filament\\Admin\\Widgets\\Home')
             ->pages([
-                Dashboard::class,
+                FilamentPage\Dashboard::class,
+                Pages\EditProfile::class,
+                ReportCustomizer::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                Widgets\AccountWidget::class,
             ])
-            ->tenant(Team::class, ownershipRelationship: 'team')
-            ->tenantMiddleware([
-                SyncShieldTenant::class,
-            ], isPersistent: true)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -58,12 +59,19 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                SetLocale::class,
-                SecurityHeaders::class,
             ])
-            ->plugins(app(ModulePlugins::class)->forPanel('admin'))
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Administration'),
             ]);
+    }
+
+    public function boot(): void
+    {
+        Fortify::$registersRoutes = false;
+        // Jetstream routes remain enabled for team management features.
     }
 }

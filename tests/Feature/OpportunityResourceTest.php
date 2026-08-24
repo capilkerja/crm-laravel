@@ -1,0 +1,64 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Opportunity;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class OpportunityResourceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $user = User::factory()->withPersonalTeam()->create();
+        $user->current_team_id = $user->ownedTeams->first()->id;
+        $user->save();
+        $this->actingAs($user);
+    }
+
+    public function test_opportunity_index_page_loads(): void
+    {
+        $user = User::factory()->withPersonalTeam()->create();
+        $team = $user->ownedTeams->first();
+        $user->current_team_id = $team->id;
+        $user->save();
+        setPermissionsTeamId($team->id);
+        $user->assignRole('admin');
+
+        $response = $this->actingAs($user)->get('/app/'.$team->id.'/opportunities');
+        $this->assertTrue(
+            in_array($response->status(), [200, 302]),
+            "Expected /app/{team_id}/opportunities to return 200 or 302, got {$response->status()}"
+        );
+    }
+
+    public function test_opportunity_model_can_be_created(): void
+    {
+        $opportunity = Opportunity::factory()->create([
+            'deal_size' => 50000,
+            'stage' => 'prospect',
+        ]);
+
+        $this->assertDatabaseHas('opportunities', [
+            'opportunity_id' => $opportunity->opportunity_id,
+            'deal_size' => 50000,
+            'stage' => 'prospect',
+        ]);
+    }
+
+    public function test_opportunity_model_can_be_updated(): void
+    {
+        $opportunity = Opportunity::factory()->create(['stage' => 'prospect']);
+
+        $opportunity->update(['stage' => 'negotiation']);
+
+        $this->assertDatabaseHas('opportunities', [
+            'opportunity_id' => $opportunity->opportunity_id,
+            'stage' => 'negotiation',
+        ]);
+    }
+}
