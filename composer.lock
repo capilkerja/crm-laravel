@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "388966b1dc7b99b15303673eb960483c",
+    "content-hash": "22364ede5ad002dd8ec11ba16573108f",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4717,6 +4717,50 @@
                 }
             ],
             "time": "2026-03-08T20:05:35+00:00"
+        },
+        {
+            "name": "liberusoftware/composer-installer",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:liberusoftware/composer-installer.git",
+                "reference": "470e3b95f6232424c69d67e4f7dad6f3619c37c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liberusoftware/composer-installer/zipball/470e3b95f6232424c69d67e4f7dad6f3619c37c4",
+                "reference": "470e3b95f6232424c69d67e4f7dad6f3619c37c4",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.6",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "composer/composer": "^2.6",
+                "laravel/pint": "^1.14",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Liberu\\ComposerInstaller\\Plugin",
+                "plugin-modifies-install-path": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\ComposerInstaller\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\ComposerInstaller\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Deterministic Composer 2 installer for tracked Liberu modules and themes.",
+            "time": "2026-08-05T07:59:00+00:00"
         },
         {
             "name": "livewire/livewire",
