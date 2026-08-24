@@ -7,23 +7,23 @@ use App\Models\Lead;
 use App\Models\Task;
 use App\Models\User;
 use App\Services\ReminderService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    public function __construct(protected \App\Services\ReminderService $reminderService)
-    {
-    }
+    public function __construct(protected ReminderService $reminderService) {}
 
-    public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function index(): Factory|View
     {
         $tasks = Task::where('assigned_to', Auth::id())->orderBy('due_date')->get();
 
         return view('tasks.index', ['tasks' => $tasks]);
     }
 
-    public function create(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function create(): Factory|View
     {
         $contacts = Contact::all();
         $leads = Lead::all();
@@ -53,7 +53,7 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
 
-    public function edit(Task $task): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function edit(Task $task): Factory|View
     {
         $contacts = Contact::all();
         $leads = Lead::all();

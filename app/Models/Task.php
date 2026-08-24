@@ -99,7 +99,6 @@ class Task extends Model implements OwnsRecords
             return app(OutlookCalendarService::class);
         }
 
-        return null;
     }
 
     public function assign(User $user): void

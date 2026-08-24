@@ -158,14 +158,14 @@ class SamlAcsTest extends TestCase
         </samlp:Response>
         XML;
 
-        $doc = new DOMDocument;
+        $doc = new DOMDocument();
         // Drop the indentation whitespace text nodes so the signed document is
         // clean XML that passes OneLogin's XSD validation.
         $doc->preserveWhiteSpace = false;
         $doc->loadXML($xml);
         $assertion = $doc->getElementsByTagNameNS('urn:oasis:names:tc:SAML:2.0:assertion', 'Assertion')->item(0);
 
-        $dsig = new XMLSecurityDSig;
+        $dsig = new XMLSecurityDSig();
         $dsig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
         $dsig->addReference(
             $assertion,

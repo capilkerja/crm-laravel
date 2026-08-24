@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class TaskTest extends TestCase
@@ -40,7 +41,7 @@ class TaskTest extends TestCase
             'due_date' => '2025-06-01 10:00:00',
         ]);
 
-        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $task->due_date);
+        $this->assertInstanceOf(Carbon::class, $task->due_date);
     }
 
     public function test_task_reminder_sent_is_cast_to_boolean(): void
@@ -56,7 +57,7 @@ class TaskTest extends TestCase
 
     public function test_task_fillable_attributes(): void
     {
-        $task = new Task;
+        $task = new Task();
         $this->assertContains('name', $task->getFillable());
         $this->assertContains('status', $task->getFillable());
         $this->assertContains('due_date', $task->getFillable());

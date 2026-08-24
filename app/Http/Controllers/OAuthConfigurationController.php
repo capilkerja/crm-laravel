@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\OAuthConfiguration;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -66,14 +68,14 @@ class OAuthConfigurationController extends Controller
         ],
     ];
 
-    public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function index(): Factory|View
     {
         $configurations = OAuthConfiguration::where('user_id', Auth::id())->get();
 
         return view('oauth.configurations.index', ['configurations' => $configurations]);
     }
 
-    public function create(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function create(): Factory|View
     {
         return view('oauth.configurations.create');
     }

@@ -75,12 +75,12 @@ trait SignsSamlResponses
         </samlp:Response>
         XML;
 
-        $doc = new DOMDocument;
+        $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
         $doc->loadXML($xml);
         $assertion = $doc->getElementsByTagNameNS('urn:oasis:names:tc:SAML:2.0:assertion', 'Assertion')->item(0);
 
-        $dsig = new XMLSecurityDSig;
+        $dsig = new XMLSecurityDSig();
         $dsig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
         $dsig->addReference(
             $assertion,

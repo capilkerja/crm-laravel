@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', fn(Request $request) => $request->user());
+Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 
 Route::prefix('v1')->middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
     // Core resources

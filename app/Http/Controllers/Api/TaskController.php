@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -134,7 +135,7 @@ class TaskController extends Controller
         // Assignee must be a member of the caller's current team, else this
         // leaks records across tenants. Refuse before touching any record.
         $team = $request->user()?->currentTeam;
-        $assignee = \App\Models\User::find($request->input('user_id'));
+        $assignee = User::find($request->input('user_id'));
         abort_unless($team && $assignee?->belongsToTeam($team), 403);
 
         $query = Task::whereIn('id', $request->input('ids'));

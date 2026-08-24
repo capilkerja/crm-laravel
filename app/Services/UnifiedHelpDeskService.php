@@ -16,9 +16,7 @@ class UnifiedHelpDeskService
 {
     protected $cacheTimeout = 300; // 5 minutes
 
-    public function __construct(protected \App\Services\WhatsAppBusinessService $whatsAppService, protected \App\Services\FacebookMessengerService $facebookMessengerService, protected \App\Services\GmailService $gmailService, protected \App\Services\OutlookService $outlookService, protected \App\Services\ImapService $imapService, protected \App\Services\Pop3Service $pop3Service)
-    {
-    }
+    public function __construct(protected WhatsAppBusinessService $whatsAppService, protected FacebookMessengerService $facebookMessengerService, protected GmailService $gmailService, protected OutlookService $outlookService, protected ImapService $imapService, protected Pop3Service $pop3Service) {}
 
     public function getAllMessages($accountId = null, $useCache = true)
     {
@@ -164,7 +162,7 @@ class UnifiedHelpDeskService
         ];
     }
 
-    protected function normalizeTimestamp($timestamp): \Carbon\Carbon
+    protected function normalizeTimestamp($timestamp): Carbon
     {
         if (is_numeric($timestamp)) {
             return Carbon::createFromTimestamp($timestamp);

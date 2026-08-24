@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        $this->app->singleton(ModuleManager::class, fn (): ModuleManager => new ModuleManager);
+        $this->app->singleton(ModuleManager::class, fn (): ModuleManager => new ModuleManager());
         // Request-scoped holder for the SSO single-logout redirect URL.
         $this->app->singleton(SsoLogoutState::class);
         $this->app->register(ModuleServiceProvider::class);
