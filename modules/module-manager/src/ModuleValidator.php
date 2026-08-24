@@ -26,9 +26,12 @@ final class ModuleValidator
             }
 
             $packageName = $composer['name'] ?? null;
-            if (! is_string($packageName) || ! InstalledVersions::isInstalled($packageName)) {
+            $isLocalModule = is_string($packageName)
+                && str_starts_with(realpath($manifest->path) ?: '', realpath(base_path('modules')).DIRECTORY_SEPARATOR);
+
+            if (! is_string($packageName) || (! InstalledVersions::isInstalled($packageName) && ! $isLocalModule)) {
                 $errors[] = "{$manifest->name()}: Composer package is not installed.";
-            } elseif (InstalledVersions::getPrettyVersion($packageName) !== $manifest->version()) {
+            } elseif (! $isLocalModule && InstalledVersions::getPrettyVersion($packageName) !== $manifest->version()) {
                 $errors[] = "{$manifest->name()}: installed Composer version does not match the manifest.";
             }
 

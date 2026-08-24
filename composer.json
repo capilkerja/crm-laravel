@@ -11,26 +11,40 @@
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-contracts"
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-contracts"
         }
     ],
     "require": {
         "php": "^8.5",
         "bezhansalleh/filament-shield": "^4.0",
         "bursteri/socialstream": "^7.0",
+        "composer/semver": "^3.4",
         "filament/filament": "^5.0",
         "filament/spatie-laravel-settings-plugin": "^5.0",
         "guzzlehttp/guzzle": "^7.8",
-        "liberusoftware/composer-installer": "^1.1",
         "laravel/framework": "^13.0",
         "laravel/horizon": "^5.0",
         "laravel/jetstream": "^5.1",
         "laravel/octane": "^2.0",
+        "laravel/pulse": "^1.7",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
+        "laravel/telescope": "^5.0",
         "laravel/tinker": "^3.0",
+        "liberusoftware/analytics-contracts": "^1.0",
+        "liberusoftware/composer-installer": "^1.1",
+        "liberusoftware/localization-contracts": "^1.0",
         "livewire/livewire": "^4.0",
         "mailchimp/marketing": "^3.0",
         "onelogin/php-saml": "^4.3",
+        "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-menu": "^4.2",
         "spatie/laravel-permission": "^6.0",
         "stancl/tenancy": "^3.10",
@@ -54,7 +68,15 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+    "classmap": [
+      "modules/*/src",
+      "modules/*/database/factories",
+      "themes/*/src"
+    ],
+    "files": [
+      "modules/theme-support/src/Support/theme_helpers.php"
+    ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -67,7 +89,7 @@
         ]
     },
     "scripts": {
-        "analyse": "phpstan analyse",
+        "analyse": "php -d memory_limit=1G vendor/bin/phpstan analyse",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",

@@ -8,6 +8,10 @@ return new class() extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('webhook_deliveries')) {
+            return;
+        }
+
         Schema::create('webhook_endpoints', function (Blueprint $t): void {
             $t->id();
             $t->string('owner_ref')->index();

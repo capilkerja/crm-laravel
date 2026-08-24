@@ -39,7 +39,7 @@ class MessageResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'unread')->count();
+        return (string) static::getModel()::where('status', 'unread')->count();
     }
 
     #[\Override]

@@ -60,7 +60,7 @@ Route::get('/contacts/{created_at?}', [ContactListController::class, 'index'])->
     ->where('created_at', '.+');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
 // Twilio TwiML routes (public, Twilio callback, signature-verified)
 Route::post('/twilio/twiml/outbound', [TwilioController::class, 'handleOutboundCall'])->middleware('twilio.verify')->name('twilio.twiml.outbound');

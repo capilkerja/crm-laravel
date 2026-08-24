@@ -76,9 +76,15 @@ class ImportTeamBackupServiceTest extends TestCase
         $source = Team::factory()->create();
         Contact::factory()->create(['team_id' => $source->id, 'email' => 'dupe@example.com']);
 
-        // Do NOT clear the source: the imported contact's unique email collides,
-        // so the insert fails mid-import.
+        // Corrupt one row so the insert fails after the team transaction starts.
         $result = (new TeamBackupService())->backup($source, 'local');
+        $zip = new ZipArchive();
+        $zip->open(Storage::disk('local')->path($result['path']));
+        $contacts = json_decode((string) $zip->getFromName('models/Contact.json'), true, flags: JSON_THROW_ON_ERROR);
+        $contacts[0]['invalid_column'] = 'forces rollback';
+        $zip->deleteName('models/Contact.json');
+        $zip->addFromString('models/Contact.json', json_encode($contacts, JSON_THROW_ON_ERROR));
+        $zip->close();
         $teamsBefore = DB::table('teams')->count();
 
         try {

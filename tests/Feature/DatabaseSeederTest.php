@@ -5,10 +5,8 @@ use Database\Seeders\DatabaseSeeder;
 use Liberu\Foundation\Organizations\Models\Team;
 use Liberu\Foundation\RolesPermissions\Models\Role;
 
-use function Pest\Laravel\seed;
-
 it('seeds a default team and an admin user with the super_admin role', function () {
-    seed(DatabaseSeeder::class);
+    $this->app->make(DatabaseSeeder::class)->run();
 
     // Default team
     $team = Team::where('name', 'Default')->first();

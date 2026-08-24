@@ -7,14 +7,12 @@ use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Foundation\Organizations\Models\Team;
 
-use function Pest\Laravel\seed;
-
 uses(RefreshDatabase::class);
 
 it('makes admin@example.com the owner of the Default team', function () {
-    seed(TeamSeeder::class);
-    seed(RolesSeeder::class);
-    seed(UserSeeder::class);
+    app(TeamSeeder::class)->run();
+    app(RolesSeeder::class)->run();
+    app(UserSeeder::class)->run();
 
     $admin = User::where('email', 'admin@example.com')->firstOrFail();
     $team = Team::where('name', 'Default')->firstOrFail();
@@ -24,9 +22,9 @@ it('makes admin@example.com the owner of the Default team', function () {
 });
 
 it('leaves no throwaway owner@example.com placeholder user', function () {
-    seed(TeamSeeder::class);
-    seed(RolesSeeder::class);
-    seed(UserSeeder::class);
+    app(TeamSeeder::class)->run();
+    app(RolesSeeder::class)->run();
+    app(UserSeeder::class)->run();
 
     expect(User::where('email', 'owner@example.com')->exists())->toBeFalse();
 });

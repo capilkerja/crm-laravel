@@ -12,7 +12,7 @@ final class InviteMember
         $email = mb_strtolower(trim($email));
         $token = Str::random(64);
         DB::transaction(function () use ($teamId, $email, $role, $inviterId, $expiresAt, $token): void {
-            DB::table('team_invitations')->updateOrInsert(['team_id' => $teamId, 'email' => $email], ['role' => $role, 'token_hash' => hash('sha256', $token), 'invited_by' => $inviterId, 'expires_at' => $expiresAt ?? now()->addDays(7), 'accepted_at' => null, 'revoked_at' => null, 'created_at' => now(), 'updated_at' => now()]);
+            DB::table('team_invitations')->updateOrInsert(['team_id' => $teamId, 'email' => $email], ['role' => $role, 'token' => $token, 'token_hash' => hash('sha256', $token), 'invited_by' => $inviterId, 'expires_at' => $expiresAt ?? now()->addDays(7), 'accepted_at' => null, 'revoked_at' => null, 'created_at' => now(), 'updated_at' => now()]);
         });
 
         return $token;

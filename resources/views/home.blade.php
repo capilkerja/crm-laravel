@@ -2,6 +2,17 @@
 
 @section('content')
 <div class="max-w-(--breakpoint-xl) mx-auto px-4 py-8">
+    <section class="mb-8 rounded-2xl bg-slate-950 px-6 py-12 text-white shadow-xl sm:px-10" aria-labelledby="welcome-heading">
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-teal-300">Clear Signal</p>
+        <h1 id="welcome-heading" class="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">A foundation you can build on.</h1>
+        <p class="mt-4 max-w-2xl text-lg text-slate-300">Liberu CRM brings customer relationships, sales activity, and team operations together in one Laravel application.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+            <a href="{{ route('register') }}" class="rounded-lg bg-teal-400 px-5 py-3 font-semibold text-slate-950">Get started free</a>
+            <a href="{{ route('login') }}" class="rounded-lg border border-slate-600 px-5 py-3 font-semibold text-white">Sign in</a>
+        </div>
+        <a class="mt-6 inline-block text-sm text-slate-400 underline decoration-slate-600 underline-offset-4" href="https://github.com/liberusoftware/boilerplate-laravel">Built on Liberu Laravel Boilerplate</a>
+    </section>
+
     @auth
         @if(session('success'))
             <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" role="alert">
