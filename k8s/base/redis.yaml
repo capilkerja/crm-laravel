@@ -1,30 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: liberu-crm-redis
-  namespace: liberu-crm
+  name: boilerplate-redis
+  namespace: boilerplate-laravel
   labels:
-    app: liberu-crm
+    app: boilerplate-laravel
     component: redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: liberu-crm
+      app: boilerplate-laravel
       component: redis
   template:
     metadata:
       labels:
-        app: liberu-crm
+        app: boilerplate-laravel
         component: redis
     spec:
       containers:
       - name: redis
         image: redis:7-alpine
-        command:
-        - redis-server
-        - --appendonly
-        - "yes"
         ports:
         - containerPort: 6379
           name: redis
@@ -42,23 +38,17 @@ spec:
           periodSeconds: 10
         readinessProbe:
           exec:
-            command:
-            - redis-cli
-            - ping
+            command: [redis-cli, ping]
           initialDelaySeconds: 5
           periodSeconds: 5
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 999
-          allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: liberu-crm-redis
-  namespace: liberu-crm
+  name: boilerplate-redis
+  namespace: boilerplate-laravel
   labels:
-    app: liberu-crm
+    app: boilerplate-laravel
     component: redis
 spec:
   type: ClusterIP
@@ -66,7 +56,6 @@ spec:
   - port: 6379
     targetPort: 6379
     protocol: TCP
-    name: redis
   selector:
-    app: liberu-crm
+    app: boilerplate-laravel
     component: redis

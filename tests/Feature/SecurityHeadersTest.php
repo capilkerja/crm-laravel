@@ -1,53 +1,15 @@
 <?php
 
-namespace Tests\Feature;
+it('adds baseline security headers to web responses', function () {
+    $response = $this->get('/');
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+    $response->assertHeader('X-Frame-Options', 'DENY');
+    $response->assertHeader('X-Content-Type-Options', 'nosniff');
+    $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    $response->assertHeader('Permissions-Policy');
+});
 
-class SecurityHeadersTest extends TestCase
-{
-    use RefreshDatabase;
-
-    public function test_security_headers_are_present_on_web_responses(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertHeader('X-Content-Type-Options', 'nosniff');
-        $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
-        $response->assertHeader('X-XSS-Protection', '1; mode=block');
-        $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    }
-
-    public function test_server_header_is_not_exposed(): void
-    {
-        $response = $this->get('/');
-
-        $this->assertFalse($response->headers->has('X-Powered-By'));
-    }
-
-    public function test_health_endpoints_return_ok(): void
-    {
-        $this->get('/health/live')->assertOk()->assertJson(['status' => 'live']);
-        $this->get('/health/startup')->assertOk()->assertJson(['status' => 'starting']);
-    }
-
-    public function test_health_ready_endpoint(): void
-    {
-        $response = $this->get('/health/ready');
-
-        $this->assertContains($response->status(), [200, 503]);
-    }
-
-    public function test_api_has_cors_headers_for_an_allowed_origin(): void
-    {
-        // CORS is an explicit allowlist now (no wildcard) — a configured origin
-        // gets the headers; an unlisted one does not.
-        config(['cors.allowed_origins' => ['http://localhost']]);
-
-        $this->options('/api/v1/contacts', [], [
-            'Origin' => 'http://localhost',
-            'Access-Control-Request-Method' => 'GET',
-        ])->assertHeader('Access-Control-Allow-Origin', 'http://localhost');
-    }
-}
+it('does not send HSTS over plain HTTP', function () {
+    // Local/dev http requests must not be pinned to HTTPS.
+    $this->get('/')->assertHeaderMissing('Strict-Transport-Security');
+});

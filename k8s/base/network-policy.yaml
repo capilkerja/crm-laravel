@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: liberu-crm-network-policy
-  namespace: liberu-crm
+  name: boilerplate-network-policy
+  namespace: boilerplate-laravel
   labels:
-    app: liberu-crm
+    app: boilerplate-laravel
 spec:
   podSelector:
     matchLabels:
-      app: liberu-crm
+      app: boilerplate-laravel
   policyTypes:
   - Ingress
   - Egress
@@ -19,16 +19,20 @@ spec:
           name: ingress-nginx
     ports:
     - protocol: TCP
+      port: 80
+    - protocol: TCP
       port: 8000
   - from:
     - podSelector:
         matchLabels:
-          app: liberu-crm
+          app: boilerplate-laravel
     ports:
     - protocol: TCP
       port: 8000
     - protocol: TCP
-      port: 6001
+      port: 6379
+    - protocol: TCP
+      port: 3306
   egress:
   - to:
     - namespaceSelector:
@@ -37,32 +41,13 @@ spec:
     ports:
     - protocol: UDP
       port: 53
-    - protocol: TCP
-      port: 53
   - to:
     - podSelector:
         matchLabels:
-          app: liberu-crm
-          component: database
-    ports:
-    - protocol: TCP
-      port: 3306
-  - to:
-    - podSelector:
-        matchLabels:
-          app: liberu-crm
-          component: redis
-    ports:
-    - protocol: TCP
-      port: 6379
-  - to:
-    - namespaceSelector: {}
+          app: boilerplate-laravel
+  - to: []
     ports:
     - protocol: TCP
       port: 443
     - protocol: TCP
       port: 80
-  - to:
-    - podSelector:
-        matchLabels:
-          app: liberu-crm

@@ -1,143 +1,20 @@
 <?php
 
 return [
+    // Composer-installed module packages. Local paths may be appended for development.
+    'paths' => [base_path('modules')],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Modules Path
-    |--------------------------------------------------------------------------
-    */
+    // Which modules boot is the manifests' decision, not this file's: ModuleRegistry::resolve()
+    // selects every installed module whose module.json declares default_enabled, so installing a
+    // package is what offers it and its own manifest is what turns it on. The two lists below are
+    // deployment overrides on top of that, empty by default.
+    //
+    // MODULES_ENABLED adds modules their manifests leave off — the three adapters that need
+    // third-party credentials. MODULES_DISABLED removes modules their manifests turn on, and
+    // wins over both the manifest and MODULES_ENABLED.
+    'enabled' => array_values(array_filter(explode(',', (string) env('MODULES_ENABLED', '')))),
+    'disabled' => array_values(array_filter(explode(',', (string) env('MODULES_DISABLED', '')))),
 
-    'path' => app_path('Modules'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | External Module Paths
-    |--------------------------------------------------------------------------
-    |
-    | Additional directories (relative to base_path) to scan for modules.
-    | These are scanned alongside the primary modules path.
-    |
-    */
-
-    'external_paths' => [],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Load Composer Modules
-    |--------------------------------------------------------------------------
-    |
-    | When true, modules in the app-modules/ directory (configured via
-    | modular.module_directory) are also discovered and registered.
-    |
-    */
-
-    'load_composer' => env('MODULES_LOAD_COMPOSER', false),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Auto Discovery
-    |--------------------------------------------------------------------------
-    */
-
-    'auto_discovery' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Modules
-    |--------------------------------------------------------------------------
-    */
-
-    'cache' => env('MODULES_CACHE', true),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Key
-    |--------------------------------------------------------------------------
-    */
-
-    'cache_key' => 'app.modules',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache TTL (seconds)
-    |--------------------------------------------------------------------------
-    */
-
-    'cache_ttl' => 3600,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Namespace
-    |--------------------------------------------------------------------------
-    */
-
-    'namespace' => 'App\\Modules',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enabled Modules
-    |--------------------------------------------------------------------------
-    |
-    | Modules not in this list (when non-empty) default to disabled on first
-    | discovery. Leave empty to default all modules to enabled.
-    |
-    */
-
-    'enabled' => [],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Assets
-    |--------------------------------------------------------------------------
-    */
-
-    'assets' => [
-        'path' => public_path('modules'),
-        'url' => '/modules',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Views
-    |--------------------------------------------------------------------------
-    */
-
-    'views' => [
-        'namespace_prefix' => 'module',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Translations
-    |--------------------------------------------------------------------------
-    */
-
-    'translations' => [
-        'namespace_prefix' => 'module',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Development Mode
-    |--------------------------------------------------------------------------
-    |
-    | Skips the cache layer so module state changes are reflected immediately.
-    | Automatically true when APP_DEBUG is true; override with MODULES_DEVELOPMENT.
-    |
-    */
-
-    'development' => env('MODULES_DEVELOPMENT', env('APP_DEBUG', false)),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Requirements
-    |--------------------------------------------------------------------------
-    */
-
-    'requirements' => [
-        'php' => '8.5',
-        'laravel' => '13.0',
-    ],
-
+    'cache' => env('MODULES_CACHE', false),
+    'cache_key' => 'liberu.modules.registry.v1',
 ];

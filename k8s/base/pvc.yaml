@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: liberu-crm-storage
-  namespace: liberu-crm
+  name: boilerplate-storage
+  namespace: boilerplate-laravel
   labels:
-    app: liberu-crm
+    app: boilerplate-laravel
 spec:
   accessModes:
     - ReadWriteOnce

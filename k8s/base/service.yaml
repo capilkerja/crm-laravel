@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: liberu-crm
-  namespace: liberu-crm
+  name: boilerplate-laravel
+  namespace: boilerplate-laravel
   labels:
-    app: liberu-crm
-    component: application
+    app: boilerplate-laravel
 spec:
   type: ClusterIP
   sessionAffinity: ClientIP
@@ -18,5 +17,5 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: liberu-crm
+    app: boilerplate-laravel
     component: application

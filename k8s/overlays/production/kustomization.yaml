@@ -5,7 +5,7 @@ resources:
 - ../../base
 - hpa.yaml
 
-namespace: liberu-crm
+namespace: boilerplate-laravel
 
 patches:
 - patch: |-
@@ -14,10 +14,10 @@ patches:
       value: 3
   target:
     kind: Deployment
-    name: liberu-crm
+    name: boilerplate-laravel
 
 configMapGenerator:
-- name: liberu-crm-config
+- name: boilerplate-config
   behavior: merge
   literals:
   - APP_ENV=production
@@ -25,5 +25,5 @@ configMapGenerator:
   - LOG_LEVEL=warning
 
 images:
-- name: liberu/crm
+- name: ghcr.io/liberusoftware/boilerplate-laravel
   newTag: latest

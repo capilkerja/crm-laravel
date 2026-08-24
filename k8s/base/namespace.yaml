@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: liberu-crm
+  name: boilerplate-laravel
   labels:
-    name: liberu-crm
-    app: liberu-crm
+    name: boilerplate-laravel
+    app: liberu-boilerplate
