@@ -94,6 +94,33 @@ return [
         'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
     ],
 
+    'zernio' => [
+        'base_url' => env('ZERNIO_BASE_URL', 'https://zernio.com/api/v1'),
+        'api_key' => env('ZERNIO_API_KEY'),
+        'timeout' => (int) env('ZERNIO_TIMEOUT', 30),
+        'retries' => (int) env('ZERNIO_RETRIES', 2),
+        'mode' => env('ZERNIO_MODE', 'fallback'),
+        'profile_id' => env('ZERNIO_PROFILE_ID'),
+        'account_ids' => [
+            'twitter' => env('ZERNIO_TWITTER_ACCOUNT_ID'),
+            'instagram' => env('ZERNIO_INSTAGRAM_ACCOUNT_ID'),
+            'facebook' => env('ZERNIO_FACEBOOK_ACCOUNT_ID'),
+            'linkedin' => env('ZERNIO_LINKEDIN_ACCOUNT_ID'),
+            'tiktok' => env('ZERNIO_TIKTOK_ACCOUNT_ID'),
+            'youtube' => env('ZERNIO_YOUTUBE_ACCOUNT_ID'),
+            'pinterest' => env('ZERNIO_PINTEREST_ACCOUNT_ID'),
+            'reddit' => env('ZERNIO_REDDIT_ACCOUNT_ID'),
+            'bluesky' => env('ZERNIO_BLUESKY_ACCOUNT_ID'),
+            'threads' => env('ZERNIO_THREADS_ACCOUNT_ID'),
+            'telegram' => env('ZERNIO_TELEGRAM_ACCOUNT_ID'),
+            'whatsapp' => env('ZERNIO_WHATSAPP_ACCOUNT_ID'),
+            'googlebusiness' => env('ZERNIO_GOOGLEBUSINESS_ACCOUNT_ID'),
+            'snapchat' => env('ZERNIO_SNAPCHAT_ACCOUNT_ID'),
+            'discord' => env('ZERNIO_DISCORD_ACCOUNT_ID'),
+            'slack' => env('ZERNIO_SLACK_ACCOUNT_ID'),
+        ],
+    ],
+
     'quickbooks' => [
         'client_id' => env('QUICKBOOKS_CLIENT_ID'),
         'client_secret' => env('QUICKBOOKS_CLIENT_SECRET'),
