@@ -42,6 +42,7 @@ class Team extends JetstreamTeam
     protected $fillable = [
         'name',
         'personal_team',
+        'zernio_profile_id',
         'user_id',
         'portal_brand_name',
         'portal_logo_url',

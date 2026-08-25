@@ -46,6 +46,52 @@ class TeamInvitationTest extends TestCase
         $this->assertCount(0, $user->currentTeam->fresh()->teamInvitations);
     }
 
+    public function test_invited_user_cannot_invite_another_user_before_accepting(): void
+    {
+        Mail::fake();
+
+        $owner = User::factory()->withPersonalTeam()->create();
+        $invitedUser = User::factory()->create();
+        $team = $owner->currentTeam;
+        $team->teamInvitations()->create([
+            'email' => $invitedUser->email,
+            'role' => 'admin',
+            'token' => Str::random(40),
+        ]);
+
+        $this->actingAs($invitedUser)
+            ->post('/team-invitations', [
+                'email' => 'another@example.com',
+                'role' => 'admin',
+                'team_id' => $team->id,
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('team_invitations', ['email' => 'another@example.com']);
+    }
+
+    public function test_user_cannot_accept_another_users_invitation(): void
+    {
+        $owner = User::factory()->withPersonalTeam()->create();
+        $invitedUser = User::factory()->create();
+        $attacker = User::factory()->create();
+        $invitation = $owner->currentTeam->teamInvitations()->create([
+            'email' => $invitedUser->email,
+            'role' => 'admin',
+            'token' => Str::random(40),
+        ]);
+
+        $this->actingAs($attacker)
+            ->post('/team-invitations/'.$invitation->id.'/accept')
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('team_invitations', ['id' => $invitation->id]);
+        $this->assertDatabaseMissing('team_user', [
+            'team_id' => $owner->currentTeam->id,
+            'user_id' => $attacker->id,
+        ]);
+    }
+
     public function test_invited_email_address_must_be_a_valid_email(): void
     {
         $this->actingAs($user = User::factory()->withPersonalTeam()->create());

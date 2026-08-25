@@ -6,8 +6,8 @@ use App\Actions\Jetstream\InviteTeamMember;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Laravel\Jetstream\Jetstream;
 
 class TeamInvitationController extends Controller
 {
@@ -33,25 +33,30 @@ class TeamInvitationController extends Controller
         return back()->with('success', __('Invitation sent successfully.'));
     }
 
-    public function acceptInvitation(Request $request, $invitationId)
+    public function acceptInvitation(Request $request, int $invitationId)
     {
-        $invitation = TeamInvitation::findOrFail($invitationId);
+        $user = $request->user();
 
-        $user = Jetstream::findUserByEmailOrFail($invitation->email);
+        abort_unless($user !== null, 401);
 
-        abort_if(
-            $request->user() && $request->user()->id !== $user->id,
-            403,
-            __('You are not authorized to accept this invitation.')
-        );
+        DB::transaction(function () use ($invitationId, $user): void {
+            $invitation = TeamInvitation::query()
+                ->lockForUpdate()
+                ->findOrFail($invitationId);
 
-        $user->switchTeam($invitation->team);
+            abort_unless(
+                strcasecmp((string) $invitation->email, (string) $user->email) === 0,
+                403,
+                __('You are not authorized to accept this invitation.')
+            );
 
-        $invitation->team->users()->attach(
-            $user, ['role' => $invitation->role]
-        );
-
-        $invitation->delete();
+            $team = $invitation->team;
+            $team->users()->syncWithoutDetaching([
+                $user->getKey() => ['role' => $invitation->role],
+            ]);
+            $user->switchTeam($team);
+            $invitation->delete();
+        });
 
         return redirect(config('fortify.home'))->with('success', __('You have joined the team!'));
     }
