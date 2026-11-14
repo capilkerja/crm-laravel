@@ -1,18 +1,20 @@
 # Security Policy
 
-## Reporting a vulnerability
+## Reporting a Vulnerability
 
-Do not disclose suspected vulnerabilities in public issues, pull requests, or discussions. Report them privately through the repository's GitHub Security Advisories page:
+Private vulnerability reporting is enabled for [liberusoftware/project-crm-laravel-filament](https://github.com/liberusoftware/project-crm-laravel-filament).
 
-https://github.com/liberusoftware/crm-laravel/security/advisories/new
+[**Report a vulnerability privately**](https://github.com/liberusoftware/project-crm-laravel-filament/security/advisories/new).
 
-Include the affected version or commit, deployment context, reproduction steps, impact, and any proof of concept needed to validate the report. Remove credentials, personal data, and other secrets from the report.
+Sign in to GitHub and use the link above, or open **Security → Advisories → Report a vulnerability** in this repository. Reports are handled privately through GitHub Security Advisories; maintainers can invite collaborators when needed to investigate and prepare a fix.
 
-If GitHub Security Advisories is unavailable, contact the repository maintainers through the private contact channel listed on the [Liberu Software website](https://www.liberu.co.uk).
+**Do not disclose suspected vulnerabilities in public issues, pull requests, or discussions.**
 
-## Supported versions
+Include the affected release or commit, package versions, relevant deployment configuration, reproduction steps or a minimal proof of concept, and the security impact. Redact credentials, tokens, personal data, and other sensitive information. Test only systems you own or have permission to assess.
 
-Security fixes are prioritized for the default branch and the latest released version. Older versions may require an upgrade before a fix is provided.
+## Supported Versions
+
+Security fixes target the default branch (`main`) and the latest release, when a release is available. Older versions may require an upgrade; backports are not guaranteed. Include the affected version or commit in your report even if you are not running the latest release.
 
 ## Response process
 
